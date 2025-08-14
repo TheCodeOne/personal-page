@@ -1,0 +1,26 @@
+{
+  "printWidth": 220,
+  "proseWrap": "never",
+  "singleQuote": false,
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "plugins": [
+    "prettier-plugin-astro",
+    "prettier-plugin-tailwindcss"
+  ],
+  "overrides": [
+    {
+      "files": "*.astro",
+      "options": {
+        "parser": "astro"
+      }
+    },
+    {
+      "files": "*.ts",
+      "options": {
+        "printWidth": 220,
+        "proseWrap": "never"
+      }
+    }
+  ]
+}
