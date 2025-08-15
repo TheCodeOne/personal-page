@@ -7,7 +7,9 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy": "wrangler deploy",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
