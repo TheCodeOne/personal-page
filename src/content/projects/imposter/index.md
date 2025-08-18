@@ -3,6 +3,8 @@ title: "Imposter Game"
 description: "Eine lokale Multiplayer-Web-App für das beliebte Partyspiel"
 date: "2025-08-01"
 tags: ["web-app", "game", "multiplayer", "offline", "pwa"]
+demoURL: "https://imposter.kokkonias.de",
+repoURL: "https://github.com/TheCodeOne",
 ---
 
 Ich habe eine Web-App gecoded, weil ich keine App gefunden habe, die es erlaubt, ohne Anmeldung und offline das dazugehörige Spiel zu spielen.
