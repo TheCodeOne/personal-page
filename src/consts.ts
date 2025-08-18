@@ -1,8 +1,8 @@
 import type { Metadata, Site, Socials } from "@types";
 
 export const SITE: Site = {
-  TITLE: "Aeh...",
-  DESCRIPTION: "Ein paar meiner Gedanken.",
+  TITLE: "Dimitrios Kokkonias",
+  DESCRIPTION: "Dimitrios Kokkonias | Eine Sammlung von Notizen, Projekten und Erkenntnissen",
   EMAIL: "www.@dimi.cool",
   NUM_POSTS_ON_HOMEPAGE: 5,
   NUM_PROJECTS_ON_HOMEPAGE: 3,
@@ -10,16 +10,16 @@ export const SITE: Site = {
 
 export const HOME: Metadata = {
   TITLE: "Home",
-  DESCRIPTION: "Ein paar meiner Gedanken.",
+  DESCRIPTION: "Notizen, Projekten und Erkenntnisse.",
 };
 
 export const BLOG: Metadata = {
-  TITLE: "Blog",
+  TITLE: "Artikel",
   DESCRIPTION: "Artikel über agile Softwareentwicklung.",
 };
 
 export const PROJECTS: Metadata = {
-  TITLE: "Projects",
+  TITLE: "Projekte",
   DESCRIPTION: "Eine Auswahl an Projekten.",
 };
 
