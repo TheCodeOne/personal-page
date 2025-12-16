@@ -1,0 +1,116 @@
+---
+title: "Das Skalierungs-Paradoxon"
+description: "Warum ein 20-Personen-Team gegen die Gesetze der Physik verstößt"
+date: "2025-11-26"
+tags:
+  - teamgröße
+  - team-skalierung
+  - kommunikationsaufwand
+  - entscheidungsfindung
+  - brooksches-gesetz
+  - kontextwechsel
+  - kognitive-belastung
+  - team-topologies
+  - organisationsdesign
+  - produktentwicklung
+---
+
+import Callout from "@/components/Callout.astro";
+
+---
+
+Jeff Bezos' "Two-Pizza Team Rule" besagt, dass Teams klein bleiben sollen – so klein, dass zwei Pizzen alle Teilnehmer satt bekommen, typischerweise 5 bis 8 Personen – um Agilität, Effizienz und schnelle Entscheidungsfindung zu fördern, indem bürokratische Hürden reduziert und die Kommunikation verbessert wird, ähnlich wie bei den hochleistungsfähigen, autonomen Teams, die für Innovation bei Amazon entscheidend sind.
+
+**Kernprinzipien der Zwei-Pizza-Regel:**
+
+- **Kleine, autonome Teams:** Reduziert Kommunikationsaufwand und Komplexität.
+- **Schnelle Entscheidungen:** Kleinere Gruppen können schneller agieren und sich auf ihre Mission konzentrieren.
+- **Förderung von Eigenverantwortung:** Jedes Mitglied fühlt sich stärker verantwortlich, da die Gruppe überschaubar ist.
+- **Fokus und Effizienz:** Verhindert, dass Ideen in großen Gruppen untergehen und fördert produktivere Diskussionen.
+
+Diese Regel wurde von Bezos eingeführt, um die Kultur der Innovation und Geschwindigkeit bei Amazon zu erhalten, auch beim Wachstum. Sie zielt darauf ab, die Effektivität zu steigern, indem sie sicherstellt, dass Meetings und Projekte schlank bleiben und nicht durch zu viele Meinungen oder bürokratische Schichten verlangsamt werden. Die Regel ist ein Symbol für die Kultur der Selbstorganisation und der Kundenorientierung, die für den Erfolg des Unternehmens wesentlich sind.1
+
+---
+
+### Die Realität im Tribe: Ein Experiment wider die Wissenschaft
+
+Während Amazon und andere High-Performance-Organisationen diese Prinzipien verinnerlicht haben, erleben wir in meinem Tribe derzeit das genaue Gegenteil. Getrieben von der Idee der "Ressourcen-Optimierung" wurde entschieden, die Verantwortung für alle unsere Produkte in einem einzigen Team zu bündeln – eine Fusion, die aus zwei zuvor getrennten Einheiten nun ein monolithisches Team von knapp **20 Personen** gemacht hat.
+
+Das Ergebnis war vorhersehbar: Das Setup macht uns in Summe träge – Entscheidungen dauern ewig. Die Reaktion des Managements ist dabei vor allem von der Angst getrieben, dass wir unsere Ziele nicht erreichen könnten: _"Wir schaffen die Ziele eventuell nicht, also müssen wir mehr Entwickler in das Team integrieren."_
+
+Dazu habe ich bereits in [„Zu langsam?“](/blog/zu-langsam) geschrieben.
+
+Dieser Artikel analysiert, warum ein 20-Personen-Team in der Softwareentwicklung systemisch zum Scheitern verurteilt ist und warum das Hinzufügen weiterer Personen die Geschwindigkeit nicht erhöhen, sondern den Stillstand beschleunigen wird.
+
+## 1. Die Mathematik der Kommunikation (Kombinatorische Explosion)
+
+Das fundamentalste Problem eines 20-Personen-Teams ist nicht kulturell, sondern mathematisch. In der Softwareentwicklung korreliert die Komplexität nicht linear mit der Anzahl der Köpfe, sondern exponentiell mit der Anzahl der Kommunikationsbeziehungen.
+
+Die Anzahl der möglichen Kommunikationskanäle $C$ in einem Team berechnet sich nach der Formel:
+
+$$
+C = \frac{n(n-1)}{2}
+$$
+
+Vergleichen wir die "Two-Pizza"-Größe mit unserer aktuellen Situation:
+
+- **Amazon Ideal (7 Personen):** 21 Kommunikationskanäle. Jeder kennt den Status des anderen. Entscheidungswege sind kurz.
+- **Aktueller Status (20 Personen):** **190** Kommunikationskanäle.
+- **Vorgeschlagene Skalierung (z.B. 25 Personen):** **300** Kommunikationskanäle.
+
+Wenn wir das Team vergrößern, steigt der Koordinationsaufwand fast quadratisch an. J. Richard Hackman, ein Pionier der Organisationsforschung, stellte fest:
+
+<Callout type="info">
+Große Teams verschwenden oft mehr Zeit mit der Verwaltung ihrer Interaktionen als mit der eigentlichen Arbeit.
+</Callout>
+
+Ein Daily Scrum mit 20 Personen ist kein Synchronisations-Termin mehr, sondern eine 45-minütige Statusmeldung, bei der 19 Personen gezwungenermaßen mental abschalten müssen.
+
+## 2. Sozialpsychologie: Der Ringelmann-Effekt
+
+Bereits 1913 identifizierte der französische Agraringenieur Maximilien Ringelmann ein Phänomen, das heute als **Ringelmann-Effekt** (oder _Social Loafing_) bekannt ist. In Experimenten zum Seilziehen wies er nach, dass die individuelle Leistung von Personen abnimmt, je größer die Gruppe wird.
+
+In einem Team von 20 Entwicklern diffundiert die Verantwortung. Es entsteht der "Zuschauereffekt" (Bystander Effect) bei der Code-Qualität und bei kritischen Bugs: _"Jemand anderes wird das schon fixen."_ Die individuelle Sichtbarkeit sinkt massiv, was unbewusst zu einer Reduktion des Engagements führt. Agilität lebt von _Commitment_ – in einer anonymen Masse von 20 Leuten ist individuelles Commitment jedoch kaum aufrechtzuerhalten.
+
+Das ist die Grundlage für die [„Die Essenz des Vertrauens“](/blog/die-essenz-des-vertrauens).
+
+## 3. Kognitive Belastung und die Kosten des Kontextwechsels
+
+Die Entscheidung, _ein_ Team für _alle_ Produkte zuständig zu machen, ignoriert die Grenzen des menschlichen Arbeitsgedächtnisses. Das Framework der **Team Topologies** (Skelton/Pais) definiert **Kognitive Belastung** (Cognitive Load) als den primären Engpass in der IT-Delivery.
+
+Interessant ist dabei die Asymmetrie in unserer Organisation: Wir haben Business-Analysten, die sich **pro Produkt** und teils sogar **pro „Step“** in der Anwendung aufteilen – von uns Entwicklern wird hingegen erwartet, dass wir **alles** abdecken und in jedem Kontext sofort handlungsfähig sind.
+
+Wenn ein Team mehrere Produkte betreut, zwingen wir die Mitglieder zu ständigen **Kontextwechseln**. Studien von Gerald Weinberg zeigen die verheerenden ökonomischen Folgen:
+
+Ein Team, das für Produkt A, Produkt B und den Legacy-Support von C zuständig ist, verliert bis zu **40-60 % seiner effektiven Kapazität** allein durch den mentalen Rüstaufwand beim Wechsel zwischen den Themen. Ein Entwickler ist keine CPU, die man beliebig zwischen Threads umschalten kann. Das Hinzufügen weiterer Entwickler in dieses Chaos reduziert die kognitive Last nicht; es erhöht nur die Anzahl der Personen, die ineffizient arbeiten und sich gegenseitig unterbrechen.
+
+## 4. Die ökonomische Evidenz: QSM-Daten
+
+Ist ein großes Team wenigstens schneller, wenn man die Kosten ignoriert? Die Daten sagen Nein.
+
+Quantitative Software Measurement analysierte über 4.000 Softwareprojekte und verglich "kleine" Teams (3-5 Personen) mit "großen" Teams (>20 Personen) bei vergleichbaren Aufgaben (ca. 100.000 Zeilen Code).
+
+Die Ergebnisse sind ernüchternd:
+
+- **Zeitgewinn:** Die großen Teams waren im Durchschnitt nur **eine einzige Woche** schneller fertig als die kleinen Teams (8,92 Monate vs. 9,12 Monate).
+- **Kostenexplosion:** Die großen Teams verbrauchten fast **das Vierfache** an Arbeitskraft für fast das gleiche Ergebnis.
+
+Ab einer Teamgröße von 7-9 Personen sinkt der _Productivity Index_ (PI) drastisch. Ein 20-Personen-Team ist ökonomisch gesehen eine Verschwendung von Budget, da der Grenznutzen jedes weiteren Mitglieds gegen Null tendiert.
+
+## 5. Warum "mehr Leute" das Problem verschlimmern (Brooks' Gesetz)
+
+Der Vorschlag des Managements, "mehr Devs zu integrieren", ist ein Lehrbuchbeispiel für **Brooks'sches Gesetz**: _"Adding manpower to a late software project makes it later."_
+
+Neue Mitarbeiter benötigen im Schnitt **3 bis 6 Monate**, um eine Netto-Produktivität zu erreichen (die sogenannte "J-Kurve" des Onboardings). In dieser Zeit binden sie die Kapazität der erfahrensten Entwickler für Mentoring und Erklärungen. In einem bereits gestressten 20-Personen-Team führt dies kurzfristig zu einem völligen Einbruch der Liefergeschwindigkeit.
+
+## Fazit: Teilen statt Addieren
+
+Die Wissenschaft und die Datenlage sind eindeutig: Ein 20-Personen-Team, das für mehrere Produkte zuständig ist, operiert weit jenseits des Optimums. Die Angst, die Ziele nicht zu erreichen, kann nicht durch das Hinzufügen weiterer Personen gelöst werden, sondern ist ein **Strukturproblem**.
+
+Um die Geschwindigkeit wiederherzustellen, müssen wir nicht addieren (mehr Leute), sondern dividieren (Teamstruktur):
+
+1.  **Zellteilung:** Das Team muss basierend auf der "Two-Pizza Rule" in 2-3 kleinere Einheiten (max. 7-9 Personen) gesplittet werden.
+2.  **Entkopplung:** Jedes Team benötigt die End-to-End-Verantwortung für _ein_ Produkt oder einen Wertstrom, um Kontextwechsel zu minimieren (Team Topologies: "Stream-Aligned Teams").
+3.  **Architektur:** Wir müssen akzeptieren, dass wir die Softwarearchitektur eventuell anpassen müssen, um diese Teamstruktur zu ermöglichen ("Inverse Conway Maneuver").
+
+Nur so können wir die Agilität zurückgewinnen, die wir durch die Zentralisierung verloren haben.
