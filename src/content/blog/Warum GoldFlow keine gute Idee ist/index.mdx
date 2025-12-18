@@ -1,0 +1,131 @@
+---
+title: "Warum „GoldFlow“ keine gute Idee ist"
+description: "Ein kritischer Vergleich der Architektur des Frameworks „GoldFlow“ mit dem Paper „A Note on Distributed Computing“ von Waldo et al."
+date: "2025-12-20"
+tags:
+  - distributed-systems
+  - software-architecture
+  - a-note-on-distributed-computing
+  - location-transparency
+  - latency
+  - partial-failure
+  - concurrency
+  - goldflow
+  - state-management
+  - angular
+  - form-validation
+---
+
+## 1. Die Begegnung mit dem monolithischen Traum
+
+Als ich vor einiger Zeit meinem jetzigen Entwicklerteam beitrat, fand ich eine Architektur vor, die auf den ersten Blick wie der heilige Gral der Webentwicklung wirkte. Das Framework, intern **GoldFlow** genannt, war bereits fertig implementiert und im vollen Einsatz. Die Vision, die die ursprünglichen Architekten antrieb, war verführerisch simpel: Ein System, das wie Redux funktioniert, aber nicht an den Grenzen des Arbeitsspeichers haltmacht.
+
+In GoldFlow wurde alles so weit abstrahiert, dass man als Entwickler lediglich ein einziges Datenmodell (Model) schreibt. Dieses Modell wird im Backend genutzt, aber durch eine komplexe Infrastruktur auch magisch für das Frontend transformiert und synchronisiert. Das Ziel war die absolute Standorttransparenz (Location Transparency). Der Entwickler sollte sich keine Gedanken darüber machen müssen, wo die Daten liegen – ob im Browser oder auf dem Server.
+
+Doch während ich mich in den bestehenden Code einarbeitete und versuchte, die täglichen Herausforderungen mit der Performance und Fehleranfälligkeit zu verstehen, stieß ich auf ein Paper aus dem Jahr 1994. Es liest sich heute wie eine Prophezeiung der Probleme, mit denen wir täglich kämpfen: [_„A Note on Distributed Computing“_ von Jim Waldo et al.](https://decomposition.al/CSE232-2024-09/readings/note-distributed-computing.pdf). Beim Lesen wurde mir schmerzlich bewusst: Das Team hatte, lange bevor ich dazu stieß, versucht, das Rad neu zu erfinden – und zwar genau so, dass es nicht rollen kann.
+
+## 2. Der Trugschluss des technologischen Fortschritts
+
+Man könnte meinen, dass wir heute, über 30 Jahre nach Waldos Veröffentlichung, diese Probleme gelöst hätten. Unsere Computer sind tausendmal schneller, das Internet ist breitbandig und allgegenwärtig. Doch das ist ein Trugschluss.
+
+Tatsächlich hat sich die Schere sogar weiter geöffnet. Während moderne CPUs so schnell geworden sind, dass ein lokaler Zugriff (z. B. auf den L2-Cache) nur noch etwa **10 Nanosekunden** dauert, unterliegt das Netzwerk immer noch den Gesetzen der Physik und der Lichtgeschwindigkeit. Ein typischer Roundtrip in einem mobilen Netzwerk liegt oft bei **>100 Millisekunden**.
+
+Das Verhältnis hat sich also nicht verbessert, sondern verschlechtert. Der Faktor zwischen „lokal“ und „verteilt“ liegt heute bei **1 : 10.000.000**. GoldFlow versucht, diese Kluft von sieben Größenordnungen wegzuabstrahieren. Es behandelt einen Netzwerk-Call so, als wäre er ein lokaler Speicherzugriff. Das ist, als würde man versuchen, einen Spaziergang zum Briefkasten (lokal) und eine Reise zum Mars (Netzwerk) mit demselben Transportmittel zu planen, nur weil beide "Reisen" sind.
+
+## 3. Die Warnung aus der Vergangenheit
+
+Waldo et al. identifizierten diese Falle bereits als die **„Unified Object Vision“**. Diese Vision postuliert, dass es keinen fundamentalen Unterschied zwischen einem lokalen Objekt (im gleichen Speicher) und einem entfernten Objekt (auf einem anderen Server) geben sollte.
+
+Die Autoren argumentieren, dass solche Systeme auf drei falschen Annahmen basieren:
+
+1.  **Es gibt ein einziges natürliches Design für eine Anwendung, egal ob lokal oder verteilt.**
+2.  **Fehlerbehandlung und Latenz sind Implementierungsdetails**, die man später lösen kann.
+3.  **Die Schnittstelle eines Objekts ist unabhängig vom Kontext seiner Nutzung.**
+
+Waldo nennt vier harte Faktoren, die lokales und verteiltes Rechnen unvereinbar machen: **Latenz**, **Speicherzugriff**, **Partieller Ausfall** und **Nebenläufigkeit**.
+
+---
+
+## 4. Latenz: Das Problem mit dem Feedback-Loop
+
+Waldo bezeichnet Latenz als den offensichtlichsten Unterschied. Ein lokaler Funktionsaufruf ist für den Nutzer unmerklich; ein Netzwerkaufruf ist eine spürbare Pause.
+
+### Das GoldFlow-Validierungs-Dilemma
+
+Am deutlichsten wird dieser Architekturfehler bei der Formularvalidierung. Obwohl im Frontend **Angular** eingesetzt wird – ein Framework, das exzellente, synchrone Validatoren für sofortiges Feedback bietet – werden diese im bestehenden Code komplett ignoriert. Die Doktrin lautet: **„Der State liegt im Backend. Also validiert das Backend.“**
+
+In GoldFlow wird zwar nicht jeder Tastendruck gesendet, aber **bei jedem Verlassen eines Feldes (Blur), beim Ändern eines Dropdowns oder beim Klicken einer Checkbox** feuert das Framework einen Call über den WebSocket an das Backend. Das Backend berechnet den neuen State, validiert ihn und schickt das Ergebnis zurück.
+
+Das klingt effizienter als „jeder Keystroke“, erzeugt aber ein subtiles, gravierendes UX-Problem:
+
+1.  Der Nutzer tippt einen Namen und drückt `Tab`, um zum nächsten Feld zu springen.
+2.  **GoldFlow** sendet den Request (Latenz beginnt).
+3.  Der Nutzer ist gedanklich und mit dem Cursor bereits im nächsten Feld und tippt dort.
+4.  Jetzt (z. B. 200–500ms später) kommt die Antwort vom Server: „Name ist ungültig“.
+5.  Das UI aktualisiert sich asynchron: Eine Fehlermeldung ploppt beim _vorherigen_ Feld auf, das Layout verschiebt sich möglicherweise (Layout Shift), während der Nutzer gerade woanders tippt.
+
+Dies verletzt das Prinzip des unmittelbaren Feedbacks. Jakob Nielsen definierte 0,1 Sekunden (100ms) als Limit, damit sich eine Interaktion (wie eine Validierung) „instantan“ anfühlt. Da wir über das Netzwerk gehen, reißen wir diese Hürde fast immer. Das Ergebnis ist eine entkoppelte, „schwammige“ Benutzererfahrung, bei der die UI der mentalen Geschwindigkeit des Nutzers hinterherhinkt.
+
+---
+
+## 5. Speicherzugriff: Die Lüge vom geteilten Modell
+
+Der zweite Punkt betrifft den Speicherzugriff. Waldo betont, dass Zeiger (Pointer) in einem verteilten System nicht funktionieren.
+
+In GoldFlow wurde alles so abstrahiert, dass „am Ende ein Model geschrieben wird“, das überall gilt. Die Architektur tut so, als hätten Frontend und Backend Zugriff auf denselben Speicherbereich. Doch das ist eine Illusion.
+
+- **Im Backend** hat das Modell direkten Zugriff auf die Datenbank und andere Services.
+- **Im Frontend** ist das transformierte Modell nur eine kopierte Hülle (DTO).
+
+Wenn ich im Code eine Methode wie `model.isValid()` sehe, stellt sich immer die Frage: Wo läuft sie? Wenn sie im Frontend läuft, fehlen ihr vielleicht Datenbankdaten (z. B. „Ist dieser Benutzername schon vergeben?“). Wenn sie im Backend läuft, haben wir wieder das Latenzproblem. Durch das Framework wird versucht, diese Grenze unsichtbar zu machen (Marshalling). Aber Waldo sagt klar:
+
+> Trying to paper over the difference creates a leaky abstraction.
+
+Sobald wir komplexe Objekte über die Leitung schicken, verlieren wir die Referenzidentität. Wir müssen ständig serialisieren und deserialisieren. Das führt dazu, dass wir Angulars effizientes Change Detection System aushebeln, da wir ständig neue Objektreferenzen vom Server erhalten, selbst wenn sich an den Daten nichts Wesentliches geändert hat.
+
+---
+
+## 6. Partieller Ausfall: Wenn der State zum Zombie wird
+
+Das vielleicht stärkste Argument von Waldo ist der **partielle Ausfall** (Partial Failure). In einer lokalen Anwendung stürzt entweder alles ab oder nichts. In einem verteilten System wie GoldFlow kann Folgendes passieren:
+
+- Der Client läuft weiter.
+- Das Netzwerk ist kurz weg (z. B. WLAN-Wechsel).
+- Der Server ist überlastet oder startet neu.
+
+Da GoldFlow essenzielle UI-Logik (Validierung beim Blur) an das Backend bindet, machen wir den Client extrem fragil. Wenn die WebSocket-Verbindung abreißt, friert die Anwendungslogik effektiv ein. Ein Nutzer kann zwar tippen, aber beim Verlassen des Feldes passiert... nichts. Oder schlimmer: Er füllt das ganze Formular aus, drückt auf Senden, und nichts geschieht, weil der State im Hintergrund nie aktualisiert wurde.
+
+Waldo warnt, dass ein vereinheitlichtes Modell den Entwickler daran hindert, robuste Fehlerbehandlungsstrategien zu bauen, weil das Framework so tut, als wäre der Netzwerkaufruf ein lokaler Aufruf, der immer gelingt. Durch dieses zentrale Architektur-Dogma („State ist im Backend“) ist es mir unmöglich, _Graceful Degradation_ oder _Offline-Support_ nachträglich einzubauen, ohne das Framework fundamental zu umgehen. Wir haben uns von der Zuverlässigkeit des Netzwerks abhängig gemacht, was laut den „Fallacies of Distributed Computing“ ein fataler Fehler ist.
+
+---
+
+## 7. Nebenläufigkeit: Der Kampf um die Wahrheit
+
+Schließlich zur Nebenläufigkeit (Concurrency). In GoldFlow dispatcht der Client Events (Blur, Dropdown-Change). Das Problem verschärft sich hier durch die Art der Events:
+
+1.  User wählt in Dropdown A einen Wert. Ein Request geht raus.
+2.  User klickt schnell in Checkbox B. Ein zweiter Request geht raus.
+3.  Der Server verarbeitet Request A, was eine komplexe Neuberechnung des Formulars auslöst (z. B. Sichtbarkeit von Feldern).
+4.  Der Server verarbeitet Request B.
+
+Wenn die Antworten in falscher Reihenfolge ankommen oder sich überlappen (Race Conditions), kann der Client-State inkonsistent werden. Waldo argumentiert, dass verteilte Systeme keinen globalen, synchronisierten Zustand haben können, ohne massive Performance-Einbußen hinzunehmen (z. B. durch globales Locking). Indem das Framework so tut, als gäbe es _den_ einen State im Backend, der immer die Wahrheit ist, laufen wir Gefahr, Benutzereingaben zu überschreiben. Wenn die Antwort auf den Dropdown-Wechsel zurückkommt, während der User gerade Checkbox B geklickt hat, setzt der Server-State Checkbox B vielleicht wieder zurück, weil er von dem Klick noch nichts wusste ("Stale State").
+
+---
+
+## 8. Fazit: Warum GoldFlow keine gute Idee ist
+
+Wenn ich das Framework, das ich vorgefunden habe, mit den Erkenntnissen von Waldo et al. vergleiche, ist das Urteil eindeutig: Wir sind in die Falle getappt. Die ursprünglichen Architekten haben versucht, die Physik der verteilten Systeme wegzuabstrahieren.
+
+**Die Kernfehler der bestehenden Architektur:**
+
+1.  **Ignoranz der Latenz:** 10ns lokal vs. >100ms Netzwerk ist kein Detail, sondern ein fundamentaler Unterschied. Validierung erst nach Server-Roundtrip (Blur) zerstört den Flow.
+2.  **Ignoranz der Werkzeuge:** Angular wird genutzt, aber kastriert, indem seine synchronen Validatoren umgangen werden.
+3.  **Falsche Abstraktion:** Die Illusion, Frontend und Backend seien eins, führt zu einer Architektur, die bei Netzwerkproblemen sofort unbenutzbar wird (kein Offline-Modus, keine Fehlertoleranz).
+
+Waldo schließt sein Paper mit dem Rat: _„Accept the differences.“_ Anstatt zu versuchen, die Grenze zwischen Client und Server unsichtbar zu machen, hätte man sie **explizit** machen müssen. Ein besseres Design wäre gewesen:
+
+- **Frontend:** Nutzt Angular Forms für sofortige, synchrone Validierung (Format, Pflichtfelder) direkt beim Tippen oder Blur.
+- **Backend:** Validiert finale Daten (Sicherheit, komplexe Business-Regeln) beim Absenden.
+- **Kommunikation:** Grobkörnige Nachrichten (z. B. „Formular absenden“) statt feinkörniger State-Updates bei jedem Feld-Blur.
+
+GoldFlow ist ein perfektes Beispiel für das „Second System Effect“ Anti-Pattern. Das Netzwerk wurde nicht besiegt; man hat sich nur die Augen zugehalten.
