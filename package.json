@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "wrangler deploy",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "ai:check": "node scripts/check-abstracts.js"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
