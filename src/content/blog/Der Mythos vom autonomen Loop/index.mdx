@@ -1,0 +1,56 @@
+---
+title: "Der Mythos vom autonomen Loop: Warum Coding nicht gelöst ist"
+description: "Die Tech-Bubble propagiert, dass Softwareentwicklung bald nur noch aus KI-Loops besteht. Warum diese Narrative gefährlich ist und die wahre Komplexität unserer Arbeit verkennt."
+date: "2026-06-12"
+tags:
+  - ai-engineering
+  - software-architecture
+  - engineering-culture
+  - productivity-myths
+  - the-primagen
+---
+import Callout from "@/components/Callout.astro";
+
+*Ein kritischer Blick auf die Behauptung, Softwareentwicklung sei ein "gelöstes Problem", die Gefahren von "Loop Engineering" und warum die eigentliche Arbeit des Entwicklers gerade erst beginnt.*
+
+> "I don't prompt Claude anymore. I have loops that are running. They are the ones that are prompting Claude and kind of figuring out what to do. My job is to write loops."
+
+Als ich dieses Zitat von Boris (Anthropic) kürzlich in einem Video von *The Primagen* hörte, musste ich unweigerlich an unseren Junior-Entwickler Kalle denken. Kalle ist ein talentierter Programmierer, der in der letzten Woche stolz verkündete, er habe ein kompliziertes Legacy-Refactoring komplett von einer KI übernehmen lassen. "Ich habe einfach einen Loop geschrieben, der so lange iteriert, bis die Tests grün sind. Coding ist im Grunde gelöst", sagte er. Doch als die Pipeline am nächsten Morgen rot aufleuchtete und ein unerklärliches Memory-Leak unsere Staging-Umgebung lahmlegte, war die Euphorie schnell verflogen. Kalle stand vor einer *Blackbox*. 
+
+Die Narrative, die aktuell aus dem Silicon Valley herüberschwappt, ist verführerisch: Coding sei die einfache Seite der Medaille, ein rein mechanischer Akt, der von autonomen KI-Agenten in Endlosschleifen übernommen werden könne. Doch ich behaupte: **Sie lügen euch an.** Ob absichtlich oder aus tiefer Überzeugung – diese Narrative offenbart ein grundlegendes Missverständnis unserer Profession.
+
+## 1. Die Phänomenologie des Loop Engineering
+
+Wir erleben aktuell einen Paradigmenwechsel vom manuellen Prompting hin zum "Loop Engineering". Die Idee ist bestechend einfach: Der Entwickler fungiert nicht länger als Tippse für Syntax, sondern als Architekt eines Systems. Er definiert den Zielzustand, und die KI iteriert selbstständig – sie beobachtet, plant, handelt und reflektiert, bis das Ziel erreicht ist.
+
+<Callout type="info">
+  **Der Trugschluss der Abstraktion:** Jede neue Abstraktionsschicht in der Softwareentwicklung (von Assembler zu C, von C zu Python, von Code zu LLM-Prompts) hat die Produktivität gesteigert, aber noch nie die essenzielle Komplexität der Domäne reduziert.
+</Callout>
+
+In der Theorie klingt das nach dem ultimativen Produktivitäts-Boost. Anthropic spricht davon, dass ihre Entwickler mittlerweile ein Vielfaches an Code produzieren. Doch hier schnappt die *Zinseszins-Falle* der technischen Schulden zu: Wer unhinterfragt Code von autonomen Loops in die Produktion pusht (sogenanntes "Yeet Code into Production"), verliert die Kontrolle über die systemische Architektur.
+
+## 2. Der Realitätsabgleich: Das flackernde Terminal
+
+Wenn "Coding gelöst" ist, warum scheitern dann genau jene Unternehmen, die diese Tools bauen, an trivialen Softwareproblemen? Ein bezeichnendes Beispiel, das *The Primagen* aufzeigt, ist *Claude Code* selbst. Ein bekanntes Problem – das Flackern des Terminals beim Rendern von Text – bestand über ein Jahr lang. 
+
+Es handelte sich hierbei nicht um ein unlösbares Infrastruktur-Problem oder fehlende Hardware-Ressourcen. Es war ein reines Software-Problem. Die Lösung? Ein Rewrite der Rendering-Engine, das (in den Worten der Entwickler) das Flackern "um etwa 85% reduzierte". Seit wann akzeptieren wir als Ingenieure stochastische Lösungen für deterministische Rendering-Probleme? Kurz vor Weihnachten musste das Update sogar zurückgerollt werden. Monate später veröffentlichte man einen "No Flicker"-Modus über einen Feature Flag, der einen völlig anderen Rendering-Pfad nutzt.
+
+Wenn Coding wirklich gelöst wäre, bräuchten wir dann Workarounds und Feature-Branches für textbasierte UI-Bugs, die sich über ein Jahr hinziehen? Nein. 
+
+## 3. Essenzielle vs. Akzidentelle Komplexität
+
+Die Diskrepanz zwischen der "Coding is solved"-Rhetorik und der Realität lässt sich am besten mit Fred Brooks' zeitlosem Essay *"No Silver Bullet"* (1986) erklären. Brooks unterteilt die Schwierigkeiten der Softwareentwicklung in zwei Kategorien:
+- **Akzidentelle Komplexität:** Die Schwierigkeiten, die durch unsere unzulänglichen Werkzeuge entstehen (z.B. Memory Management in C, oder das Schreiben von Boilerplate-Code).
+- **Essenzielle Komplexität:** Die innewohnende Schwierigkeit, abstrakte Geschäftslogik, unklare Nutzerbedürfnisse und architektonische Systemgrenzen in fehlerfreie Logik zu übersetzen.
+
+KI-Tools und "Loops" lösen mit beispielloser Effizienz die akzidentelle Komplexität. Sie sind fantastische Begleiter, um Boilerplate zu generieren oder Syntax-Fehler zu finden. Doch die Behauptung, damit sei *Coding an sich* gelöst, setzt das reine Tippen von Zeichen mit Software Engineering gleich. 
+
+Unsere eigentliche Arbeit ist die *Kognitive Reibung* (Cognitive Friction). Es geht darum, die absurden Randfälle des realen Lebens in deterministische Systeme zu pressen. Es geht darum, Trade-offs zwischen Performance, Sicherheit und Wartbarkeit zu treffen. Ein Loop, der blindlings auf einen grünen Test iteriert, versteht weder den Kontext noch die architektonischen Konsequenzen seines Handelns.
+
+## 4. Fazit: Das tayloristische Erbe der KI-Ära
+
+Die aktuelle "Just write loops"-Bewegung fühlt sich an wie ein modernes, tayloristisches Erbe: Die Trennung von Denken und Handeln. Der Entwickler soll nur noch das "Was" definieren, während die Maschine das "Wie" abarbeitet. Doch in der komplexen Wissensarbeit lässt sich das "Wie" nie vollständig vom "Was" trennen.
+
+> Softwareentwicklung ist kein Fließband, sondern ein kontinuierlicher Prozess der Wahrheitsfindung.
+
+Wir dürfen uns von der Marketing-Maschinerie nicht einreden lassen, unsere Kernkompetenz sei überflüssig geworden. Nutzen wir KI-Tools? Absolut. Sie sind mächtige Hebel. Aber wir bleiben die Ingenieure. Wir tragen die Verantwortung für das System. Und solange selbst hochbezahlte KI-Entwickler ein Jahr brauchen, um ein Terminal-Flackern zu reparieren, ist Coding definitiv noch lange nicht gelöst.
